@@ -41,7 +41,7 @@ div.project {
   margin-bottom: 20px;
 }
 
-@media(max-width: 1500px) {
+@media(max-width: 900px) {
   div.project {
     flex-basis: calc(33.333% - 10px);
   }
