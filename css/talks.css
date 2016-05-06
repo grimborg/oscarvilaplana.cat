@@ -1,0 +1,53 @@
+@import url('/css/defaults.css');
+
+div.talks {
+  display: flex;
+  flex-wrap: wrap;
+  /*max-width: 1000px;*/
+  max-width: 2000px;
+  padding-left: 50px;
+  padding-right: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: space-between;
+  align-items: center;
+}
+
+div.talk img {
+  height: 100%;
+  width: 100%;
+  /*max-width: calc(100% - 10px);
+  max-height: calc(100% - 10px);
+  margin-left: 5px;
+  margin-top: 5px;*/
+}
+
+div.talks a {
+  display: flex;
+  flex-basis: 100%;
+}
+
+div.talk {
+  padding: 5px;
+  text-align: center;
+  flex-basis: calc(25% - 10px);
+  display: flex;
+  align-items: center;
+  /*background: rgb(239, 239, 239);*/
+  /*width: 450px;*/
+  /*height: 200px;*/
+  border: 2px solid rgb(229, 229, 229);
+  margin-bottom: 20px;
+}
+
+@media(max-width: 1500px) {
+  div.talk {
+    flex-basis: calc(33.333% - 10px);
+  }
+}
+
+@media(max-width: 700px) {
+  div.talk {
+    flex-basis: 100%;
+  }
+}
