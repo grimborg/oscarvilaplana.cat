@@ -3,7 +3,6 @@
 div.projects {
   display: flex;
   flex-wrap: wrap;
-  /*max-width: 1000px;*/
   max-width: 1500px;
   padding-left: 100px;
   padding-right: 100px;
@@ -14,7 +13,6 @@ div.projects {
 }
 
 div.project img {
-  height: 100%;
   width: 100%;
 }
 
@@ -23,7 +21,6 @@ div.projects a {
   flex-direction: column;
   flex-basis: 100%;
   color: rgba(0, 0, 0, 0.8);
-  border-bottom: 1px dotted white;
   text-decoration: none;
 }
 
