@@ -79,7 +79,7 @@ div.text-colorbar {
 }
 
 div.text-colorbar a {
-  color: rgba(255, 255, 255, .8);
+  color: rgba(255, 255, 255, 1);
   border-bottom: 1px dotted white;
   text-decoration: none;
 }
