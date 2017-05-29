@@ -1,0 +1,1120 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>GraphQL and Graphene</title>
+
+		<style>
+			@import 'https://fonts.googleapis.com/css?family=Source+Code+Pro:200,300,400,500,600,700,900&subset=latin-ext';
+			@import 'https://fonts.googleapis.com/css?family=Rubik|Cuprum|Oxygen|Source+Sans+Pro:200,300,400,500,600,700,900&subset=latin-ext';
+			@import 'https://fonts.googleapis.com/css?family=Oswald:300,400,700';
+		</style>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/talk.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/github.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement('link')
+			link.rel = 'stylesheet'
+			link.type = 'text/css'
+			link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css'
+			document.getElementsByTagName('head')[0].appendChild(link)
+		</script>
+
+		<style>
+			.reveal pre {
+				box-shadow: none;
+				border: 1px solid rgba(0, 0, 0, 0.2);
+			}
+
+			.muted {
+				color: lightgray;
+			}
+
+			.blue {
+		    color: #1b91ff;
+			}
+
+			.bucket-group-container {
+				display: flex;
+				flex:1;
+				flex-direction: column;
+			}
+
+			.bucket-group {
+				/*display: flex;*/
+				flex:1;
+		    margin-bottom: 1em !important;
+				/*flex-direction: row;*/
+			}
+
+			.bucket-items {
+				padding: 0.25em !important;
+				text-align: left;
+				border: 2px solid lightgray !important;
+		    min-height: 1.3em;
+		    width: 100%;
+		    display: inline-block;
+			}
+
+			.buckets {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+			}
+
+			.bucket {
+				flex:1;
+				padding: 1em !important;
+				border: 1px solid;
+			}
+
+			.left {
+				text-align: left;
+			}
+
+			.clear {
+				border: none !important;
+			}
+
+			body {
+				transition: all 0.45s;
+				background-size: 100% 100%;
+			}
+			.half body {
+				background: linear-gradient(to bottom, #43C6B1 50%, white 50%);
+			}
+
+			body .reveal {
+				/*margin-top:0.5em;*/
+			}
+
+			body .reveal .slides {
+				width: 100% !important;
+
+			}
+
+			.half-content {
+				text-align: center;
+			}
+
+			.dark body {
+				background: linear-gradient(to bottom, #999 50%, #999 50%);
+			}
+
+			.graphene-logo {
+				  background-color: rgb(216,83,75);
+			}
+
+			.dark body section[data-state="dark"] {
+				padding-left: 2em;
+				text-align: left;
+			}
+
+			.strip body {
+				background: linear-gradient(to bottom, white 33%, #43C6B1 33%, #43C6B1 66%, white 66%);
+			}
+
+			.split body {
+				background: linear-gradient(to right, #43C6B1 38%, white 38%);
+			}
+
+			[data-state="split"] {
+				width:100%;
+				position: relative;
+				display: flex !important;
+				justify-content: center;
+				align-content: center;
+				align-items: center;
+			}
+
+			.split-section {
+				text-align: center;
+				/*display: inline;*/
+				width: 62%;
+			}
+
+			.split-section img.diagram {
+				border: 0px;
+				height: 500px;
+				padding: 40px;
+				border: 0px !important;
+			}
+
+			.split-section:first-child {
+				width: 38%;
+			}
+
+			.split-section {
+				padding-right: 1em !important;
+			}
+
+			.white {
+				color: white;
+			}
+
+			ul.tree {
+				font-size: 24px;
+				position: relative;
+			}
+
+			ul.tree ul.tree {
+				margin-left: 4em !important;
+			}
+
+			ul.tree li {
+				list-style: none;
+				padding: 0.5em;
+				margin-left: 0.5em;
+				margin-top: 0.75em;
+				position: relative;
+			}
+
+			ul.tree .tree-label {
+				position: relative;
+			}
+
+			.query {
+				color: #e91d63;
+			}
+
+			.node {
+				color: #673ab7;
+			}
+
+			ul.tree .query {
+				font-size: 0.75em;
+				top: -1em;
+				position:absolute;
+				left:0;
+			}
+
+			ul.tree .node {
+				font-size: 0.75em;
+				top: -1em;
+				position:absolute;
+				right:0;
+			}
+
+			ul.tree ul.tree li:after {
+			    content: '';
+			    position: absolute;
+			    width: 1px;
+			    height: 1em;
+			    background: #999;
+			    left: -1.5em;
+			    top: .2em;
+			}
+
+			ul.tree ul.tree li:before {
+			    content: '';
+			    position: absolute;
+			    width: 1em;
+			    height: 1px;
+			    background: #999;
+			    left: -1.5em;
+			    top: 1.2em;
+			}
+
+			ul.tree.grouped {
+				border: 1px solid #999;
+			}
+
+			.sub-query {
+				position: absolute;
+				border: 1px solid #999 !important;
+				padding-left: 0.5em !important;
+				padding-right: 0.5em !important;
+				right:-6em;
+			}
+
+			.sub-query:after {
+				content: '';
+				position: absolute;
+				width:0.85em;
+				height:1px;
+				background: #999;
+				left:-0.85em;
+				top:50%;
+			}
+
+			.query-stages {
+				position: absolute;
+				display: flex;
+				flex-direction: row;
+				left:.5em;
+				width: 92%;
+				height: 100%;
+			}
+
+			.query-stage {
+				display: flex;
+				flex: 1;
+				text-align: center;
+				padding: 0.25em !important;
+			}
+
+			.query-stage-inner {
+				font-size: 0.85em !important;
+				color: #999;
+				border: 2px dashed #999 !important;
+				flex:1;
+			}
+
+			.stack {
+				width:100%;
+				height:100%;
+				top:0;
+				display: flex;
+				flex-direction: row;
+				margin-left:0.5em !important;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.stack .pane {
+				position: relative;
+				flex:1;
+				height: 30vh;
+				max-width: 50%;
+				margin:0 0.5em;
+				border: 2px solid #999;
+				padding: 0.5em;
+				padding-top:1em;
+
+				display: flex;
+				vertical-align: bottom;
+
+				/*flex-direction: column;*/
+				/*justify-content: flex-end;*/
+			}
+
+			.pane-inner {
+				width:100%;
+				display: flex;
+				vertical-align: bottom;
+				justify-content: flex-start;
+		    flex-direction: column-reverse;
+			}
+
+			.stack.h .pane {
+				margin-top: 1em;
+				padding-top:1em;
+				max-width: 100%;
+				height: 8vh;
+				flex-direction: row;
+				justify-content: flex-start;
+			}
+
+			.stack.h .pane-inner {
+				flex-direction: row;
+				justify-content: flex-start;
+			}
+
+			.stack .call {
+				display: flex !important;
+				align-items: center;
+				text-align: left;
+				margin: 0.25em;
+				font-size: 0.75em;
+				padding:0.25em;
+				background-color: #f8e71c;
+			}
+
+			.stack .pane .label {
+				font-size: 0.5em;
+				font-weight: 400;
+				color:#999;
+				position: absolute;
+				top:0.5em;
+				left:0.5em;
+			}
+			aside.controls {
+				display: none !important
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section data-state="half">
+					<span class="half-content"><h2>GraphQL, Graphene, Python</h2></span>
+					<br><br><br><br><br><br>
+					<span class="half-content">
+						<span>Òscar Vilaplana</span>
+						<br>
+						<span>@grimborg</span>
+					</span>
+				</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>self</h2>
+	</div>
+	<div class="split-section">
+		<p>Òscar Vilaplana</p>
+		<br>
+		<p>Software, Writing, Music</p>
+		<p>Python, Golang, NodeJS, React</p>
+		<br>
+				<p>@grimborg</p>
+		<p>http://oscarvilaplana.cat</p>
+	</div>
+</section>
+
+<section data-state="strip" style="color: white">
+	<h2 style="padding-top: 0.4em">Value</h2>
+</section>
+
+				<section data-state="strip" style="color: white">
+					<h3><em>Our frontend engineers want us to use GraphQL!</em></h3>
+					<p class="fragment" style="padding-top: 1em">―Harro van der Klauw, Engineer at Zupr</p>
+				</section>
+
+<section data-state="dark">
+	<h2>Example API: Friend's Plans</h2>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Friend's Plans</h2>
+		<span class="white">What Everyone is Up To</span>
+	</div>
+	<div class="split-section">
+		<img class="diagram" src="img/friends-plans.png"/>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Friend's Plans</h2>
+		<span class="white">Simple API</span>
+	</div>
+	<div class="split-section">
+<pre class="fragment"><code data-trim class="json">
+# GET /friends
+
+[{
+	"id": "Aevae2wi",
+	"name": "Wilbur Whateley",
+	"avatar": "https://images.fakeurl.com/wilbur-whateley.png"
+},
+	...
+]
+</code></pre>
+
+<pre class="fragment"><code data-trim class="json">
+# GET /plans?creator=Aevae2wi
+
+[{
+	"id": "huk8Phie",
+	"creator": "Aevae2wi",
+	"name": "Go check out weird color in forest",
+	"date": "2017-06-17T11:48:25.333Z",
+	"attendees": ["Aevae2wi", "Yah2sava", "thi2ooNg"],
+	"location": "ooNahx7r"
+},
+	...
+]
+</code></pre>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section split-section-left">
+		<h2>Friend's Plans</h2>
+		<span class="white">API Calls</span>
+	</div>
+	<div class="split-section">
+<pre class="fragment">
+<code data-trim class="http"># Fetch the upcoming plans
+- GET /plans
+</code></pre>
+<pre class="fragment"><code data-trim class="http"># Fetch the creator names
+- GET /friends/Aevae2wi
+- GET /friends/Yah2sava
+- GET /friends/thi2ooNg
+- GET /friends/Aevae2wi
+...
+</code></pre>
+<pre class="fragment"><code data-trim class="http"># Fetch the attendees names
+- GET /friends/Xudou6Oo
+- GET /friends/goe8Rae2
+- GET /friends/eiphooR8
+- GET /friends/iGee8kei
+...
+</code></pre>
+<pre class="fragment">
+<code data-trim class="http"># Fetch the locations
+- GET /locations/ooNahx7r
+- GET /locations/tai0jeiF
+...
+</code></pre>
+					</div>
+				</section>
+
+
+<section data-state="split">
+	<div class="split-section split-section-left">
+		<h2>REST</h2>
+		<span class="white">Pros</span>
+	</div>
+	<div class="split-section">
+		<ul>
+			<li>Easy to write
+				<span class="fragment">(we'll see...)</span>
+			</li>
+			<li>Many tools/libraries available
+				<span class="fragment">(we'll see...)</span>				
+			</li>
+		</ul>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section split-section-left">
+		<h2>REST</h2>
+		<span class="white">Cons</span>
+	</div>
+	<div class="split-section">
+		<ul>
+			<li>Fetch too much / too little</li>
+			<li>Many calls</li>
+			<li>Documentation</li>
+			<li>Hard to discover</li>
+			<li>No usable smart generic client</li>
+			<li>Much postprocessing needed</li>
+			<li>Much to decide</li>
+			<li class="fragment">Mismatch reality - API</li>
+		</textarea>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section split-section-left">
+		<h2>Fixing...</h2>
+		<span class="white"></span>
+	</div>
+	<div class="split-section">
+		<pre class="fragment"><code class="nohighlight" data-strip># Embed the attendees
+GET /friends/Aevae2wi/plans?include=attendees</code></pre>
+
+		<pre class="fragment"><code class="nohighlight" data-strip># Only some fields
+GET /friends/Aevae2wi/plans?include=attendees&amp;fields=name,attendees</code></pre>
+
+		<pre class="fragment"><code class="nohighlight" data-strip># Bulk fetch
+GET /friends?id=Aevae2wi,Yah2sava,thi2ooNg,Aevae2wi</code></pre>
+</div>
+	</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Friend's Plans</h2>
+		<span class="white">What's the data like?</span>
+	</div>
+	<div class="split-section">
+		<img class="diagram" src="img/friends-plans.png"/>
+	</div>
+</section>
+
+<section data-state="strip" style="color: white">
+	<h3><em>Our frontend engineers want us to use GraphQL!</em></h3>
+	<p style="padding-top: 1em">―Harro van der Klauw, Engineer at Zupr</p>
+</section>
+
+<section data-state="strip" style="color: white">
+	<h3><em>because</em></h3>
+</section>
+
+<section data-state="strip" style="color: white">
+	<h3><em>they can just ask for what they want!</em></h3>
+</section>
+
+<section data-state="split">
+	<div class="split-section split-section-left">
+		<h2>Inventing...</h2>
+		<span class="white"></span>
+	</div>
+	<div class="split-section">
+		<pre class="fragment"><code class="nohighlight" data-strip># Embed the attendees
+GET /friends/Aevae2wi/plans?include=attendees</code></pre>
+
+		<pre class="fragment"><code class="nohighlight" data-strip># Only some fields
+GET /friends/Aevae2wi/plans?include=attendees&amp;fields=name,attendees</code></pre>
+
+		<pre class="fragment"><code class="nohighlight" data-strip># Bulk fetch
+GET /friends?id=Aevae2wi,Yah2sava,thi2ooNg,Aevae2wi</code></pre>
+</div>
+	</section>
+
+<section data-state="strip">
+	<h3>You're trying to guess/decide what the client wants</h3>
+</section>
+
+<section data-state="strip">
+	<h3>Waste</h3>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Data</h2>
+		<span class="white">User's view</span>
+	</div>
+	<div class="split-section">
+		<img class="diagram" src="img/pygrunn.png"/>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Data</h2>
+		<span class="white">Our view</span>
+	</div>
+	<div class="split-section">
+		<img class="diagram" src="img/facebook-data.png"/>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Friend's Plans</h2>
+		<span class="white">What the client wants</span>
+	</div>
+	<div class="split-section">
+		<ul>
+		<li>Upcoming plans</li>
+		<li>Name of whose plan it is</li>
+		<li>Names of the people who are going</li>
+		<li>Address and map of where it will happen.</li>
+		</ul>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Friend's Plans</h2>
+		<span class="white">What response I would like</span>
+	</div>
+	<div class="split-section">
+<pre class="mergeable"><code class="nohighlight">
+{
+	plans {
+</code></pre>
+<pre class="mergeable"><code class="fragment nohighlight">
+		name
+		description
+</code></pre>
+<pre class="mergeable"><code class="fragment nohighlight">
+		creator {
+			name
+		}
+</code></pre>
+<pre class="mergeable"><code class="fragment nohighlight">
+		location {
+			name
+			coordinates
+		}
+</code></pre>
+<pre class="mergeable"><code class="fragment nohighlight">
+		attendees {
+			name
+		}
+</code></pre>
+<pre class="mergeable"><code class="nohighlight">
+	}
+}
+</code></pre>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Friend's Plans</h2>
+		<span class="white">What response I would like</span>
+	</div>
+	<div class="split-section">
+<pre class="mergeable"><code class="nohighlight">
+{
+	plans: [{
+</code></pre>
+<pre class="mergeable"><code class="nohighlight">
+		name: "Go check out weird color at the forest"
+		description: "It's freaking me out"
+</code></pre>
+<pre class="mergeable"><code class="nohighlight">
+		creator: {
+			name: "Wilbur Whateley"
+		}
+</code></pre>
+<pre class="mergeable"><code class="nohighlight">
+		location: {
+			name: "Forest out of town"
+			coordinates: "I don't know them"
+		}
+</code></pre>
+<pre class="mergeable"><code class="nohighlight">
+		attendees: [
+			{ name: "Wilbur Whateley" }, { name: "Randolph Carter" }, ...
+		]
+</code></pre>
+</code></pre>
+<pre class="mergeable"><code class="nohighlight">
+	}, ...]
+}
+</code></pre>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>GraphQL</h2>
+		<span class="white">Basics</span>
+	</div>
+	<div class="split-section">
+		<ul>
+			<li class="fragment">Query Language</li>
+			<li class="fragment">Describe your data and how to operate with it <span class="fragment">(types, documentation, defaults...)</li>
+			<li class="fragment">Client decides which data it needs.</li>
+			<li class="fragment">Server resolves the data.</li>
+		</ul>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Queries</h2>
+		<span class="white">Types and Query Definitions</span>
+	</div>
+	<div class="split-section">
+		<pre class="fragment"><code class="graphql" data-trim>
+type Query {
+	plans: [Plan]
+}
+		</pre></code>
+
+		<pre class="fragment"><code class="graphql" data-trim>
+type Plan {
+	id: ID!
+	name: String!
+	description: String
+	creator: Friend!
+	attendees: [Friend]!
+	location: Location!
+}
+		</pre></code>
+		<pre class="fragment"><code class="graphql" data-trim>
+type Friend {
+	id: ID!
+	name: String!
+	avatarUrl: String
+}
+		</pre></code>
+		<pre class="fragment"><code class="graphql" data-trim>
+type Location {
+	id: ID!
+	name: String!
+	coordinates: String!
+}
+		</pre></code>
+
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Queries</h2>
+		<span class="white">Parameters</span>
+	</div>
+	<div class="split-section">
+		<pre class="fragment"><code class="graphql" data-trim>
+type Query {
+	plans(limit: Integer, maxDays: Integer): [Plan]
+}
+		</pre></code>
+		<pre class="fragment"><code class="graphql" data-trim>
+{
+	plans(limit: 10, maxDays: 7) {
+		name
+		creator {
+			name
+		}
+	}
+}
+		</pre></code>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section split-section-left">
+		<h2>GraphQL</h2>
+		<span class="white">What's good</span>
+	</div>
+	<div class="split-section">
+		<ul>
+			<li>Client decides what it wants to receive</li>
+			<li>Single call</li>
+			<li>Self-documenting</li>
+			<li>Types: Validation</li>
+		</textarea>
+	</div>
+</section>
+
+<section data-state="strip">
+	<h3>So, how does it work?</h3>
+</section>
+
+<section data-state="strip">
+	<h3>Where's the magic?</h3>
+</section>
+
+<section data-state="strip">
+	<h3>The magic is in <span class="fragment" style="margin-left: 0.2em">💕YOU💕🎉 </span></h3>
+</section>
+
+<section data-state="strip">
+	<h3>GraphQL: Query Language</h3>
+</section>
+
+<section data-state="dark">
+	<h3>Implementation</h3>
+</section>
+
+<section class="graphene-logo" data-background="rgb(216,83,75)">
+	<div class="graphene-logo">
+	<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="logo"><g fill="none" fill-rule="evenodd"><path class="logo-path" d="M49.17 10.915L15.415 30.29l.058 39.252 34.633 20.082 33.345-18.95-.023-39.79-34.185 19.238" stroke="white" stroke-width="4.987"></path>
+    <g transform="translate(41.5 3)"><ellipse cx="7.934" cy="7.97" rx="7.934" ry="7.97" fill="white"></ellipse></g>
+    <g transform="translate(8 22.482)"><ellipse cx="7.934" cy="7.97" rx="7.934" ry="7.97" fill="white"></ellipse></g>
+    <g transform="translate(8 62.33)"><ellipse cx="7.934" cy="7.97" rx="7.934" ry="7.97" fill="white"></ellipse></g>
+    <g transform="translate(42.382 81.813)"><ellipse cx="7.934" cy="7.97" rx="7.934" ry="7.97" fill="white"></ellipse></g>
+    <g transform="translate(75.882 62.33)"><ellipse cx="7.934" cy="7.97" rx="7.934" ry="7.97" fill="white"></ellipse></g>
+    <g transform="translate(75.882 22.482)"><ellipse cx="7.934" cy="7.97" rx="7.934" ry="7.97" fill="white"></ellipse></g>
+    <g transform="translate(42.382 41.964)"><ellipse cx="7.934" cy="7.97" rx="7.934" ry="7.97" fill="white"></ellipse></g>
+    </g>
+</svg>
+</div>
+<h2>Graphene</h2>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Graphene Query</h2>
+		<span class="white">Simple resolver</span>
+	</div>
+	<div class="split-section">
+		<pre class="fragment"><code class="python" data-trim>
+import graphene
+
+class Query(graphene.ObjectType):
+    myself = graphene.String()
+
+    def resolve_myself(self, args, context, info):
+        return 'I am Groot'
+
+schema = graphene.Schema(query=Query)
+		</pre></code>
+		<pre class="fragment"><code class="python" data-trim>
+>>> result = schema.execute('''
+  query {
+    myself
+  }
+''')
+
+>>> result.data
+OrderedDict([('myself', 'I am Groot')])
+		</pre></code>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Graphene Query</h2>
+		<span class="white">Fetch Data</span>
+	</div>
+	<div class="split-section">
+		<pre><code class="python" data-trim>
+import graphene
+
+class Plan(graphene.ObjectType):
+    name = graphene.String()
+		...
+
+class Query(graphene.ObjectType):
+    plans = graphene.Field(Plan)
+
+    def resolve_plans(self, args, context, info):
+        return get_plans_from_db()
+
+schema = graphene.Schema(query=Query)
+</code></pre>
+</section>
+
+<section data-state="strip">
+	<h3>Django</h3>
+</section>
+
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Graphene + Django</h2>
+		<span class="white">Your Models</span>
+	</div>
+	<div class="split-section">
+		<pre><code class="python" data-trim>
+class Friend(models.Model):
+    name = models.CharField(max_length=200)
+
+class Location(models.Model):
+    name = models.CharField(max_length=200)
+
+class Plan(models.Model):
+    name = models.CharField(max_length=200)
+    datetime = models.DateTimeField()
+    description = models.CharField(max_length=1000)
+    location = models.ForeignKey(Location)
+    creator = models.ForeignKey(Friend)
+    attendees = models.ManyToManyField('Friend', related_name="plan_attendees")
+</code></pre>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Graphene + Django</h2>
+		<span class="white">Schema from Models</span>
+	</div>
+	<div class="split-section">
+		<pre><code class="python" data-trim>
+import graphene
+from graphene import Schema, resolve_only_args
+from graphene_django import DjangoConnectionField, DjangoObjectType
+
+from plans import models
+</code></pre><pre><code class="python" data-trim>
+
+class Friend(DjangoObjectType):
+
+    class Meta:
+        model = models.Friend
+</code></pre><pre><code class="python" data-trim>
+class Location(DjangoObjectType):
+
+    class Meta:
+        model = models.Location
+</code></pre><pre><code class="python" data-trim>
+
+class Plan(DjangoObjectType):
+    attendees = graphene.List(Friend)
+
+    @graphene.resolve_only_args
+    def resolve_attendees(self):
+        return self.attendees.all()
+
+    class Meta:
+        model = models.Plan
+</code></pre>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Graphene + Django</h2>
+		<span class="white">Mutations</span>
+	</div>
+	<div class="split-section">
+<pre><code class="python" data-trim>
+class CreatePlan(graphene.Mutation):
+    class Input:
+        name = graphene.String(description='Name of the plan')
+        description = graphene.String(description='Extended description of what the creator is up to')
+        creator_id = graphene.String(description='ID of the friend who creates the plan')
+
+    ok = graphene.Boolean()
+    plan = graphene.Field(Plan)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        try:
+            creator = models.Friend.objects.get(id=args.get('creator_id'))
+        except models.Plan.DoesNotExist:
+            return CreatePlan(ok=False)
+
+        plan = models.Plan(
+            name=args.get('name'),
+            description=args.get('description'),
+            creator=creator
+        )
+        plan.save()
+        return CreatePlan(plan=plan, ok=True)
+
+class Mutation(graphene.ObjectType):
+    create_plan = CreatePlan.Field()
+</code></pre>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Client</h2>
+		<span class="white">Queries</span>
+	</div>
+	<div class="split-section">
+<pre class="fragment"><code class="javascript" data-trim>
+// queries.js
+
+module.exports = {
+	fetchItems: gql`
+	query items {
+		items {
+			id
+			name
+		}
+	}`,
+	createItem: gql`
+		mutation createItem($name: String!, $duration: Int!) {
+			createItem(name: $name, duration: $duration) {
+				id
+			}
+		}
+	`
+};
+</code></pre>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Client</h2>
+		<span class="white">Display data</span>
+	</div>
+	<div class="split-section">
+<pre><code class="javascript">
+class ItemList extends Component {
+	render() {
+		const { loading, error, items, refetch } = this.props.fetchItems;
+
+		if (loading) {
+			return &lt;LoadingSpinner /&gt;
+		}
+		if (error) {
+			return &lt;ErrorPage /&gt;
+		}
+		return (
+			&lt;div&gt;
+				&lt;ul&gt;
+					{items.map(item =&gt; &lt;li&gt;&lt;Item key={item.id} name={item.name} /&gt;&lt;/li&gt;)}
+				&lt;/ul&gt;
+				&lt;Button onClick={refetch}&gt;Refresh&lt;/Button&gt;
+			&lt;/div&gt;
+		)
+	}
+}
+
+const ItemListWithData = graphql(queries.fetchItems)(ItemList);
+```
+</code></pre>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Client</h2>
+		<span class="white">Modify data</span>
+	</div>
+	<div class="split-section">
+<pre><code class="javascript" data-trim>
+class ItemCreator extends Component {
+	handleSubmit = async ({ name }) => {
+		const result = await mutate({
+			variables: {
+				name,
+				duration,
+			},
+			refetchQueries: [
+				{
+					query: queries.fetchItems,
+				},
+			],
+		});
+	}
+	// ...
+}
+
+const ItemCreatorWithMutation = graphql(queries.createItem)(ItemCreator);
+</code></pre>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Client</h2>
+		<span class="white">Modify data</span>
+	</div>
+	<div class="split-section">
+		<ul>
+			<li>Client has some understanding of the data</li>
+			<li>Client-side caching, smart fetching</li>
+			<li>Client knows when to refetch (sometimes it needs help)</li>
+		</ul>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>Graphene + Django</h2>
+		<span class="white">How about...</span>
+	</div>
+	<div class="split-section">
+		<ul>
+			<li class="fragment"><b>Fetching many related entities?</b><br>Batching / Dataloader</li>
+			<li class="fragment"><b>Auth, Rate / Depth Limiting?</b><br>Use graphene-django middleware</li>
+			<li class="fragment"><b>Pagination</b><br>Use Limit + Offset/Cursor (check out Relay)</li>
+		</ul>
+	</div>
+</section>
+
+<section data-state="split">
+	<div class="split-section">
+		<h2>tl;dr</h2>
+		<span class="white"></span>
+	</div>
+	<div class="split-section">
+		<ul>
+			<li>GraphQL makes it easier to expose data</li>
+			<li>Closer to Data = Less Waste</li>
+			<li>Easy to get started: many resources (GraphQL, Graphene, Apollo, Relay)</li>
+			<li>Easy to allow your clients to kill your server: act preventively</li>
+			<li>Worth learning</li>
+		</ul>
+	</div>
+</section>
+
+
+				<section data-state="strip">
+					<h3>Thanks!</h3>
+					<h4>@grimborg</h4>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+				transition: 'none',
+				slideNumber: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
