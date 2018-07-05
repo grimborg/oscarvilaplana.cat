@@ -1,0 +1,31 @@
+$ kops create cluster --zones eu-central-1a $NAME --yes
+
+I1123 11:35:36.421054   55021 create_cluster.go:659] Inferred --cloud=aws from zone "eu-central-1a"
+I1123 11:35:36.421699   55021 create_cluster.go:845] Using SSH public key: /Users/oscar/.ssh/id_rsa.pub
+I1123 11:35:38.188997   55021 subnets.go:183] Assigned CIDR 172.20.32.0/19 to subnet eu-central-1a
+I1123 11:35:48.298151   55021 executor.go:91] Tasks: 0 done / 63 total; 34 can run
+I1123 11:35:49.863669   55021 vfs_castore.go:422] Issuing new certificate: "kube-scheduler"
+I1123 11:35:49.929027   55021 vfs_castore.go:422] Issuing new certificate: "kubelet"
+I1123 11:35:49.931174   55021 vfs_castore.go:422] Issuing new certificate: "kube-proxy"
+I1123 11:35:50.096169   55021 vfs_castore.go:422] Issuing new certificate: "kube-controller-manager"
+I1123 11:35:50.278523   55021 vfs_castore.go:422] Issuing new certificate: "master"
+I1123 11:35:50.339852   55021 vfs_castore.go:422] Issuing new certificate: "kops"
+I1123 11:35:50.385877   55021 vfs_castore.go:422] Issuing new certificate: "kubecfg"
+I1123 11:35:52.098567   55021 executor.go:91] Tasks: 34 done / 63 total; 12 can run
+I1123 11:35:52.803829   55021 executor.go:91] Tasks: 46 done / 63 total; 15 can run
+I1123 11:35:54.080679   55021 launchconfiguration.go:327] waiting for IAM instance profile "masters.kube.grimborg.io" to be ready
+I1123 11:35:54.080722   55021 launchconfiguration.go:327] waiting for IAM instance profile "nodes.kube.grimborg.io" to be ready
+I1123 11:36:04.556827   55021 executor.go:91] Tasks: 61 done / 63 total; 2 can run
+I1123 11:36:05.040201   55021 executor.go:91] Tasks: 63 done / 63 total; 0 can run
+I1123 11:36:05.040249   55021 dns.go:152] Pre-creating DNS records
+I1123 11:36:07.335691   55021 update_cluster.go:247] Exporting kubecfg for cluster
+Kops has set your kubectl context to kube.grimborg.io
+
+Cluster is starting.  It should be ready in a few minutes.
+
+Suggestions:
+ * validate cluster: kops validate cluster
+ * list nodes: kubectl get nodes --show-labels
+ * ssh to the master: ssh -i ~/.ssh/id_rsa admin@api.kube.grimborg.io
+The admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
+ * read about installing addons: https://github.com/kubernetes/kops/blob/master/docs/addons.md

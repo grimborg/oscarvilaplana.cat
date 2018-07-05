@@ -1,0 +1,27 @@
+{
+  "Comment": "Create a subdomain NS record in the parent domain",
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "kube.grimborg.io",
+        "Type": "NS",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "ns-1994.awsdns-57.co.uk"
+          },
+          {
+            "Value": "ns-402.awsdns-50.com"
+          },
+          {
+            "Value": "ns-1358.awsdns-41.org"
+          },
+          {
+            "Value": "ns-819.awsdns-38.net"
+          }
+        ]
+      }
+    }
+  ]
+}
